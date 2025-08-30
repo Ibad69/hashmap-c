@@ -5,18 +5,23 @@
 #include "hashmap.h"
 #include <string.h>
 #include <time.h>
+#include <stdarg.h>
+#include <stddef.h>
 
-int main () {
+#include <setjmp.h>
+#include <cmocka.h>
+
+int generic_test() {
+
     clock_t start_time, end_time;
     double time_taken;
+
     // benchmark the hashmap by putting 10k values in it and then finding one from it 
     // compare the compute / searching time with something like go maps? IDK JUST DO IT BRO!
 
     htable_struct barr[100000];
     int barr_size = 0;
 
-    // htable_struct *hashtable = calloc(16, sizeof(htable_struct));
-    // htable htable = {.htable = hashtable, .max_length = 16, .curr_length = 0};
     htable *htable = ht_create();
 
     char *keys[100000];
@@ -89,6 +94,18 @@ int main () {
     }
 
     ht_destroy(htable);
+    return 1;
+}
 
-    return 0;
+static void compute_benchmark(void **state) {
+    int s = generic_test();
+    assert_int_equal(s, 1);
+}
+
+int main (void) {
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(compute_benchmark),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }

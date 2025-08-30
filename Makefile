@@ -3,7 +3,7 @@ CC     := gcc
 CFLAGS := -Wall -Wextra
 
 # Extra flags for memory checking
-MEMORY_FLAGS := -fsanitize=address -fstack-protector-all
+MEMORY_FLAGS := -fsanitize=address -fstack-protector-all -lcmocka
 
 # Source and object files
 SRC  := main.c hashmap.c
