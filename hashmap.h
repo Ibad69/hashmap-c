@@ -15,6 +15,8 @@ typedef struct HTABLE {
 uint64_t hash_key (const char* key, size_t capacity);
 
 
+htable* ht_create(); 
+void ht_destroy(htable *table); 
 void ht_insert(void *key, void *value, htable *table); 
 char* ht_get(void *key, htable *table); 
 char* ht_get_arr(void *key, htable_struct *barr, int *barr_size);

@@ -30,6 +30,24 @@ uint64_t hash_key (const char* key, size_t capacity) {
     return hash;
 }
 
+htable* ht_create(){
+
+    htable_struct *entries = calloc(16, sizeof(htable_struct));
+    htable *table = malloc(sizeof(htable));
+
+    table->htable = entries;
+    table->curr_length = 0;
+    table->max_length = 16;
+
+    return table;
+}
+
+void ht_destroy(htable *table) {
+    printf("destroying the hashmap \n");
+    free(table->htable);
+    free(table);
+}
+
 void ht_insert_entry(void *key, void *value, htable_struct *ht_entries_arr, size_t capacity) {
     
     // this below would mask out the from the huge hash last 4 bits because we are using & operator and & operator only has 4 bits if it is somethingg like 16
@@ -42,14 +60,11 @@ void ht_insert_entry(void *key, void *value, htable_struct *ht_entries_arr, size
 
     ht_entries_arr[index].name = (char*)key;
     ht_entries_arr[index].value = (char*)value;
-    // table->curr_length++; 
 }
 
 
 void ht_scale(htable *table) {
     size_t new_capacity = table->max_length * 2;
-
-    // calloc the new entries
 
     htable_struct *new_ht = calloc(new_capacity, sizeof(htable_struct));
     if (new_ht == NULL) {
@@ -57,19 +72,19 @@ void ht_scale(htable *table) {
     }
 
     htable_struct *old_ht = table->htable;
-    // table->htable = 
 
     for(int i = 0; i < table->max_length; i++) {
         htable_struct ht_entry = table->htable[i];
-        // printf("the entries key : %s \n", ht_entry.name);
         if (ht_entry.name != NULL) {
-            // do the ht_insert 
             ht_insert_entry(ht_entry.name, ht_entry.value, new_ht, new_capacity);
         }
     }
-    // free(table->htable);
     table->max_length = new_capacity;
     table->htable = new_ht;
+    // potential memory if not free over here
+    // // potential memory if not free over here
+    // // potential memory if not free over her
+    free(old_ht);
 }
 
 void ht_insert(void *key, void *value, htable *table){
@@ -87,12 +102,10 @@ void ht_insert(void *key, void *value, htable *table){
 
     ht_insert_entry(key, value, table->htable, table->max_length);
     table->curr_length++;
-
-    // barr[*barr_size] = kvp;
-   // (*barr_size)++;
 }
 
 char* ht_get(void *key, htable *table){
+    // collision management skip until you find a relevant value for this  
     uint64_t hash = hash_key((char*)key, table->max_length);
     size_t index = (size_t)(hash & (uint64_t)(table->max_length - 1));
     return table->htable[index].value;

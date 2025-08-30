@@ -15,8 +15,9 @@ int main () {
     htable_struct barr[100000];
     int barr_size = 0;
 
-    htable_struct *hashtable = calloc(16, sizeof(htable_struct));
-    htable htable = {.htable = hashtable, .max_length = 16, .curr_length = 0};
+    // htable_struct *hashtable = calloc(16, sizeof(htable_struct));
+    // htable htable = {.htable = hashtable, .max_length = 16, .curr_length = 0};
+    htable *htable = ht_create();
 
     char *keys[100000];
     char *values[100000];
@@ -26,20 +27,22 @@ int main () {
         snprintf(buf, sizeof(buf), "key%d", i);
 
         keys[i] = strdup(buf);
-        values[i] = "value";
+        values[i] = strdup(buf);
 
         // printf("inserting keys[i] : %s \n", keys[i]);
 
-        ht_insert(keys[i], values[i], &htable);
+        ht_insert(keys[i], values[i], htable);
         ht_insert_arr(keys[i], values[i], barr, &barr_size);
+
+        // free(keys[i]);
     }
 
-    printf("printingg the max length that has reached for the table : %zu \n", htable.max_length);
-    printf("printing the current lenggth: %zu \n", htable.curr_length);
+    printf("printingg the max length that has reached for the table : %zu \n", htable->max_length);
+    printf("printing the current lenggth: %zu \n", htable->curr_length);
 
-    for (int i = 0; i < htable.max_length; i++) {
-        // printf("the values that are existing : %s %s \n", htable.htable[i].name, htable.htable[i].value);
-    }
+    // for (int i = 0; i < htable->max_length; i++) {
+    //     // printf("the values that are existing : %s %s \n", htable.htable[i].name, htable.htable[i].value);
+    // }
 
     // ht_insert("Content Type", "123", &htable, index, barr, &barr_size);
 
@@ -47,7 +50,7 @@ int main () {
     // *************************** HASHMAP BENCHMARK ****************************************
     start_time = clock(); // Record the start time
 
-    char *value = ht_get("key91000", &htable);
+    char *value = ht_get("key90000", htable);
     printf("the value received from the hashmap : %s \n", value);
 
     end_time = clock(); // Record the end time
@@ -85,6 +88,7 @@ int main () {
         printf("Lookup took %.3fs\n", time_taken_arr);
     }
 
-    free(hashtable);
+    ht_destroy(htable);
+
     return 0;
 }

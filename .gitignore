@@ -1,1 +1,4 @@
 exec*
+hashmap.o
+main.o
+program*
